@@ -6,9 +6,6 @@ while (true)
 {
     double firstNumber = 0;
     double secondNumber = 0;
-
-    int operationNumber = 0;
-
     double result = 0;
 
     Console.WriteLine("Введите 1-ое число: ");
@@ -18,17 +15,7 @@ while (true)
         Console.WriteLine("Неправильный формат данных");
     }
 
-    Console.WriteLine("Выберите операцию:");
-    Console.WriteLine("1.+ (сложение)");
-    Console.WriteLine("2.- (вычитание)");
-    Console.WriteLine("3.* (умножение)");
-    Console.WriteLine("4./ (деление)");
-    Console.WriteLine();
-
-    while (!int.TryParse(Console.ReadLine(), out operationNumber)||(operationNumber>4||operationNumber<1))
-    {
-        Console.WriteLine("неверная операция");
-    }
+    Calculator.Operation operation = ReadOperation();
 
     Console.WriteLine("Введите 2-ое число: ");
 
@@ -39,18 +26,18 @@ while (true)
 
     try
     {
-        switch (operationNumber)
+        switch (operation)
         {
-            case 1: result = calculator.Sum(firstNumber, secondNumber); break;
-            case 2: result = calculator.Sub(firstNumber, secondNumber); break;
-            case 3: result = calculator.Mult(firstNumber, secondNumber); break;
-            case 4: result = calculator.Div(firstNumber, secondNumber); break;
+            case Calculator.Operation.Add: result = calculator.Sum(firstNumber, secondNumber); break;
+            case Calculator.Operation.Subtract: result = calculator.Sub(firstNumber, secondNumber); break;
+            case Calculator.Operation.Multiply: result = calculator.Mult(firstNumber, secondNumber); break;
+            case Calculator.Operation.Divide: result = calculator.Div(firstNumber, secondNumber); break;
             default: throw new InvalidOperationException("неизвестная операция");
         }
 
         Console.WriteLine($"Результат: {result}\n");
     }
-    catch(Exception e)
+    catch (Exception e)
     {
         Console.WriteLine($"Ошибка: {e.Message}");
     }
@@ -58,4 +45,25 @@ while (true)
     Console.WriteLine("Хотите продолжить? (y)");
     if (Console.ReadLine()?.ToLower() != "y")
         break;
+}
+
+static Calculator.Operation ReadOperation()
+{
+    Console.WriteLine("Выберите операцию:");
+    Console.WriteLine($"{(int)Calculator.Operation.Add}. + (сложение)");
+    Console.WriteLine($"{(int)Calculator.Operation.Subtract}. - (вычитание)");
+    Console.WriteLine($"{(int)Calculator.Operation.Multiply}. * (умножение)");
+    Console.WriteLine($"{(int)Calculator.Operation.Divide}. / (деление)");
+
+    int operationNumber;
+    while (true)
+    {
+        if (int.TryParse(Console.ReadLine(), out operationNumber)
+            && Enum.IsDefined(typeof(Calculator.Operation), operationNumber))
+        {
+            return (Calculator.Operation)operationNumber;
+        }
+
+        Console.WriteLine("Неверная операция");
+    }
 }

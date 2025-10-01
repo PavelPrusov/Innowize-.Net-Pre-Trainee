@@ -6,6 +6,12 @@
         public double Sub(double x, double y) => x - y;
         public double Mult(double x, double y) => x * y;
         public double Div(double x, double y) => y != 0 ? x / y : throw new DivideByZeroException();
-
+        public enum Operation
+        {
+            Add = 1,
+            Subtract = 2,
+            Multiply = 3,
+            Divide = 4
+        }
     }
 }
