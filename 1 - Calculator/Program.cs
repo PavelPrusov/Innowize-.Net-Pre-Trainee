@@ -1,4 +1,4 @@
-﻿using _1___Calculator;
+﻿using Calculator_App;
 
 Calculator calculator = new Calculator();
 
@@ -35,7 +35,7 @@ while (true)
             default: throw new InvalidOperationException("неизвестная операция");
         }
 
-        Console.WriteLine($"Результат: {result}\n");
+        Console.WriteLine($"Результат: {Math.Round(result,3)}\n");
     }
     catch (Exception e)
     {
@@ -58,12 +58,9 @@ static Calculator.Operation ReadOperation()
     int operationNumber;
     while (true)
     {
-        if (int.TryParse(Console.ReadLine(), out operationNumber)
-            && Enum.IsDefined(typeof(Calculator.Operation), operationNumber))
-        {
+        if (int.TryParse(Console.ReadLine(), out operationNumber) && Enum.IsDefined(typeof(Calculator.Operation), operationNumber))
             return (Calculator.Operation)operationNumber;
-        }
-
+        
         Console.WriteLine("Неверная операция");
     }
 }
