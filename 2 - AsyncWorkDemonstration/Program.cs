@@ -4,12 +4,14 @@ List<string> DataToProcess = new() { "FirstData", "SecondData", "ThirdData" };
 
 Console.WriteLine("Синхронная обработка:");
 TimeSpan Time = RunProcessing(DataToProcess);
+Console.WriteLine($"Обработка заняла {Time.TotalSeconds:F3} сек.");
 
 Console.WriteLine("\nАссинхронная обработка:");
 TimeSpan AsyncTime = await RunAsyncProcessing(DataToProcess);
+Console.WriteLine($"Обработка заняла {AsyncTime.TotalSeconds:F3} сек.");
 
-double TineDifference = Math.Abs(Time.TotalSeconds - AsyncTime.TotalSeconds);
-Console.WriteLine($"\nРазница: {TineDifference:F3} сек.");
+double TimeDifference = Math.Abs(Time.TotalSeconds - AsyncTime.TotalSeconds);
+Console.WriteLine($"\nРазница: {TimeDifference:F3} сек.");
 
 static async Task<TimeSpan> RunAsyncProcessing(List<string> data)
 {
@@ -26,7 +28,6 @@ static async Task<TimeSpan> RunAsyncProcessing(List<string> data)
 
     sw.Stop();
 
-    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F3} сек.");
     return sw.Elapsed;
 }
 
@@ -37,7 +38,6 @@ static TimeSpan RunProcessing(List<string> data)
 
     sw.Stop();
 
-    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F3} сек.");
     return sw.Elapsed;
 }
 
