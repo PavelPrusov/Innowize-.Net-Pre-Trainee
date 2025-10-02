@@ -3,12 +3,15 @@
 List<string> DataToProcess = new() { "FirstData", "SecondData", "ThirdData" };
 
 Console.WriteLine("Синхронная обработка:");
-RunProcessing(DataToProcess);
+TimeSpan Time = RunProcessing(DataToProcess);
 
 Console.WriteLine("\nАссинхронная обработка:");
-await RunAsyncProcessing(DataToProcess);
+TimeSpan AsyncTime = await RunAsyncProcessing(DataToProcess);
 
-static async Task RunAsyncProcessing(List<string> data)
+double TineDifference = Math.Abs(Time.TotalSeconds - AsyncTime.TotalSeconds);
+Console.WriteLine($"\nРазница: {TineDifference:F3} сек.");
+
+static async Task<TimeSpan> RunAsyncProcessing(List<string> data)
 {
     var sw = Stopwatch.StartNew();
 
@@ -22,16 +25,20 @@ static async Task RunAsyncProcessing(List<string> data)
     }
 
     sw.Stop();
-    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F2} сек.");
+
+    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F3} сек.");
+    return sw.Elapsed;
 }
 
-static void RunProcessing(List<string> data)
+static TimeSpan RunProcessing(List<string> data)
 {
     var sw = Stopwatch.StartNew();
     foreach (var d in data) Console.WriteLine(ProcessData(d));
 
     sw.Stop();
-    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F2} сек.");
+
+    Console.WriteLine($"Обработка заняла {sw.Elapsed.TotalSeconds:F3} сек.");
+    return sw.Elapsed;
 }
 
 static async Task<string> ProcessDataAsync(string dataName)
