@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 
-List<string> DataToProcess = new() { "FirstData", "SecondData", "ThirdData" };
+List<string> dataToProcess = new() { "FirstData", "SecondData", "ThirdData" };
 
 Console.WriteLine("Синхронная обработка:");
-TimeSpan Time = RunProcessing(DataToProcess);
-Console.WriteLine($"Обработка заняла {Time.TotalSeconds:F3} сек.");
+TimeSpan time = RunProcessing(dataToProcess);
+Console.WriteLine($"Обработка заняла {time.TotalSeconds:F3} сек.");
 
 Console.WriteLine("\nАссинхронная обработка:");
-TimeSpan AsyncTime = await RunAsyncProcessing(DataToProcess);
-Console.WriteLine($"Обработка заняла {AsyncTime.TotalSeconds:F3} сек.");
+TimeSpan asyncTime = await RunAsyncProcessing(dataToProcess);
+Console.WriteLine($"Обработка заняла {asyncTime.TotalSeconds:F3} сек.");
 
-double TimeDifference = Math.Abs(Time.TotalSeconds - AsyncTime.TotalSeconds);
-Console.WriteLine($"\nРазница: {TimeDifference:F3} сек.");
+double timeDifference = Math.Abs(time.TotalSeconds - asyncTime.TotalSeconds);
+Console.WriteLine($"\nРазница: {timeDifference:F3} сек.");
 
 static async Task<TimeSpan> RunAsyncProcessing(List<string> data)
 {
@@ -43,19 +43,19 @@ static TimeSpan RunProcessing(List<string> data)
 
 static async Task<string> ProcessDataAsync(string dataName)
 {
-    int AsyncDelaySec = 3;
-    await Task.Delay(AsyncDelaySec * 1000);
+    int asyncDelaySec = 3;
+    await Task.Delay(asyncDelaySec * 1000);
 
-    string result = $"Обработка {dataName} завершена за {AsyncDelaySec} сек.";
+    string result = $"Обработка {dataName} завершена за {asyncDelaySec} сек.";
 
     return result;
 }
 static string ProcessData(string dataName)
 {
-    int ThreadDelaySec = 3;
-    Thread.Sleep(ThreadDelaySec * 1000);
+    int threadDelaySec = 3;
+    Thread.Sleep(threadDelaySec * 1000);
 
-    string result = $"Обработка {dataName} завершена за {ThreadDelaySec} сек.";
+    string result = $"Обработка {dataName} завершена за {threadDelaySec} сек.";
    
     return result;
 }
