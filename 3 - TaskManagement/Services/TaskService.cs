@@ -3,7 +3,7 @@ using TaskManagement.Models;
 
 namespace TaskManagement.Services
 {
-    public class TaskService
+    public class TaskService: ITaskService
     {
         private readonly IRepository<TaskItem> _taskRepository;
 
@@ -39,5 +39,12 @@ namespace TaskManagement.Services
         }
 
         public bool DeleteTask(int id) => _taskRepository.Delete(id);
+
+        public TaskItem? GetTaskById(int id)
+        {
+            var task = _taskRepository.GetById(id);
+            return task;
+        }
+       
     }
 }
