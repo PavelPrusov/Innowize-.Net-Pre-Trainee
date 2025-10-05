@@ -16,7 +16,8 @@ namespace TaskManagement.Infrastructure.Database
 
         public IDbConnection CreateConnection()
         {
-            return new SqlConnection(_connectionString);
+            using var connection =  new SqlConnection(_connectionString);
+            return connection;
         }
     }
 }
