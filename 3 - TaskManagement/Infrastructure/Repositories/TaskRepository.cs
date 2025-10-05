@@ -54,7 +54,6 @@ namespace TaskManagement.Infrastructure.Repositories
             const string sql = @"
                 INSERT INTO Tasks (Title, Description, IsCompleted, CreatedAt)
                 VALUES (@Title, @Description, @IsCompleted, @CreatedAt);
-                SELECT CAST(SCOPE_IDENTITY() as int);
             ";
 
             var affected = conn.Execute(sql,item) > 0;

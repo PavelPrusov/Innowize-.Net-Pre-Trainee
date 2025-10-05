@@ -14,7 +14,6 @@ class MenuManager
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("=== Task Manager ===");
             Console.WriteLine("1. Add Task");
             Console.WriteLine("2. View All Tasks");
             Console.WriteLine("3. Toggle Task Completion");
@@ -42,6 +41,7 @@ class MenuManager
     {
         Console.Write("Title: ");
         var title = Console.ReadLine()!;
+
         Console.Write("Description: ");
         var description = Console.ReadLine()!;
 
