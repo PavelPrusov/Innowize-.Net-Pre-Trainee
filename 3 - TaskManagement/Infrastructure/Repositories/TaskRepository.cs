@@ -11,8 +11,25 @@ namespace TaskManagement.Infrastructure.Repositories
         public TaskRepository(IConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
+            EnsureDatabaseCreated();
         }
-        
+
+        public void EnsureDatabaseCreated()
+        {
+            using var conn = _connectionFactory.CreateConnection();
+            const string sql = @"
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Tasks' and xtype='U')
+                CREATE TABLE Tasks (
+                    Id INT IDENTITY(1,1) PRIMARY KEY,
+                    Title NVARCHAR(255) NOT NULL,
+                    Description NVARCHAR(MAX),
+                    IsCompleted BIT NOT NULL DEFAULT 0,
+                    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+                )";
+            conn.Execute(sql);
+        }
+
+
         public IEnumerable<TaskItem> GetAll()
         {
             using var conn = _connectionFactory.CreateConnection();
