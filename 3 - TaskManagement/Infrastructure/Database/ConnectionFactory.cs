@@ -10,8 +10,8 @@ namespace TaskManagement.Infrastructure.Database
 
         public ConnectionFactory(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("Deffault") 
-                ?? throw new InvalidOperationException("connection string 'Deffault' not found");
+            _connectionString = configuration.GetConnectionString("Default") 
+                ?? throw new InvalidOperationException("connection string 'Default' not found");
         }
 
         public IDbConnection CreateConnection()
