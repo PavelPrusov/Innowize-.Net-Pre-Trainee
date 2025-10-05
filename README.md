@@ -4,3 +4,4 @@
 
 - **[Calculator](./1%20-%20Calculator/)** - Console calculator
 - **[AsyncWorkDemonstration](./2%20-%20AsyncWorkDemonstration/)** - A brief overview of how asynchrony works  
+- **[TaskManagement](./3%20-%TaskManagement/)** - Console app 'task management' 
