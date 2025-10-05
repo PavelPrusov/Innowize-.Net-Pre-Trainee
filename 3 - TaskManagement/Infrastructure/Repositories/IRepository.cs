@@ -1,6 +1,6 @@
-﻿namespace TaskManagement
+﻿namespace TaskManagement.Infrastructure.Repositories
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T>
     {
         IEnumerable<T> GetAll();
         T? GetById(int id);

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace TaskManagement
+namespace TaskManagement.Infrastructure.Database
 {
     public class ConnectionFactory: IConnectionFactory
     {

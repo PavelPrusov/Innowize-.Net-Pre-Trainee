@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using TaskManagement.Infrastructure.Database;
+using TaskManagement.Models;
 
-namespace TaskManagement
+namespace TaskManagement.Infrastructure.Repositories
 {
     public class TaskRepository : IRepository<TaskItem>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace TaskManagement
+namespace TaskManagement.Infrastructure.Database
 {
     public interface IConnectionFactory
     {
