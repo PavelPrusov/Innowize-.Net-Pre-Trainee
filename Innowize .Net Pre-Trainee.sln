@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1 - Calculator", "1 - Calcu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2 - AsyncWorkDemonstration", "2 - AsyncWorkDemonstration\2 - AsyncWorkDemonstration.csproj", "{7F9F47F5-4E3F-4ABE-9F5F-05E8E974A665}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3 - TaskManagement", "3 - TaskManagement\3 - TaskManagement.csproj", "{3F721D54-0218-42DD-9495-94859A8282B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7F9F47F5-4E3F-4ABE-9F5F-05E8E974A665}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F9F47F5-4E3F-4ABE-9F5F-05E8E974A665}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F9F47F5-4E3F-4ABE-9F5F-05E8E974A665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F721D54-0218-42DD-9495-94859A8282B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F721D54-0218-42DD-9495-94859A8282B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F721D54-0218-42DD-9495-94859A8282B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F721D54-0218-42DD-9495-94859A8282B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
