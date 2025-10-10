@@ -3,8 +3,8 @@ namespace Library.DataAccess.Repositories
 {
     public class InMemoryRepository<T> : IRepository<T> where T : class, new()
     {
-        protected static readonly List<T> _entities = new();
-        private static int _nextId = 1;
+        protected readonly List<T> _entities = new();
+        private int _nextId = 1;
         protected virtual int GetId(T entity)
         {
             var prop = typeof(T).GetProperty("Id");
@@ -14,6 +14,18 @@ namespace Library.DataAccess.Repositories
         {
             var prop = typeof(T).GetProperty("Id");
             prop.SetValue(entity, id);
+        }
+       protected virtual void UpdateExistingEntity(T existingEntity, T newEntity)
+        {
+            var properties = typeof(T).GetProperties();
+            foreach (var prop in properties)
+            {
+                if (prop.Name != "Id" && prop.CanWrite)
+                {
+                    var value = prop.GetValue(newEntity);
+                    prop.SetValue(existingEntity, value);
+                }
+            }
         }
         public Task<T> CreateAsync(T entity)
         {
@@ -56,9 +68,8 @@ namespace Library.DataAccess.Repositories
 
             if (existingEntity != null)
             {
-                _entities.Remove(existingEntity);
-                _entities.Add(entity);
-                return Task.FromResult<T?>(entity);
+                UpdateExistingEntity(existingEntity, entity);
+                return Task.FromResult<T?>(existingEntity);
             }
 
             return Task.FromResult<T?>(null);
