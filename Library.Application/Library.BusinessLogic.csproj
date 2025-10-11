@@ -8,7 +8,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Library.Domain\Library.Domain.csproj" />
+		<ProjectReference Include="..\Library.Domain\Library.DataAccess.csproj" />
 	</ItemGroup>
 
 </Project>
