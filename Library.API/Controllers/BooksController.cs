@@ -51,7 +51,5 @@ namespace Library.API.Controllers
             if (!deletedBook) return NotFound();
             return NoContent();
         }
-
-
     }
 }
