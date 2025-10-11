@@ -1,4 +1,4 @@
-﻿namespace Library.BusinessLogic
+﻿namespace Library.BusinessLogic.Interfaces
 {
     public interface IBookService
     {
