@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Library.BusinessLogic.DTO.Author;
 
-namespace Library.BusinessLogic.Validators
+namespace Library.BusinessLogic.Validators.Author
 {
     public class CreateAuthorValidator : AbstractValidator<CreateAuthorDto>
     {
