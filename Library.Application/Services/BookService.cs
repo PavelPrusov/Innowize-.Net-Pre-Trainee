@@ -12,29 +12,87 @@ namespace Library.BusinessLogic.Services
             _repository = repository;
         }
 
-        public Task<BookDto> CreateAsync(CreateBookDto authorDto)
+        public async Task<BookDto> CreateAsync(CreateBookDto bookDto)
         {
-            throw new NotImplementedException();
+            var book = new Book
+            {
+                Title = bookDto.Title,
+                PublishedYear = bookDto.PublishedYear,
+                AuthorId = bookDto.AuthorId
+            };
+
+            var createdBook = await _repository.AddAsync(book);
+
+            var result = new BookDto { 
+                Id = createdBook.Id, 
+                Title = createdBook.Title, 
+                PublishedYear = createdBook.PublishedYear, 
+                AuthorId = createdBook.AuthorId };
+
+            return result;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repository.DeleteAsync(id);
         }
 
-        public Task<List<BookDto>> GetAllAsync()
+        public async Task<List<BookDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var books = await _repository.GetAllAsync();
+
+            var result = books.Select(book => new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                PublishedYear = book.PublishedYear,
+                AuthorId = book.AuthorId
+            }).ToList();
+
+            return result;
         }
 
-        public Task<BookDto?> GetByIdAsync(int id)
+        public async Task<BookDto?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var book = await _repository.GetByIdAsync(id);
+            if (book == null) return null;
+
+            var result =  new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                PublishedYear = book.PublishedYear,
+                AuthorId = book.AuthorId
+            };
+
+            return result;
         }
 
-        public Task<BookDto?> UpdateAsync(int id, UpdateBookDto authorDto)
+        public async Task<BookDto?> UpdateAsync(int id, UpdateBookDto bookDto)
         {
-            throw new NotImplementedException();
+            var existingBook = await _repository.GetByIdAsync(id);
+            if (existingBook == null) return null;
+
+            var updatedBook = new Book
+            {
+                Id = id,
+                Title = bookDto.Title,
+                PublishedYear = bookDto.PublishedYear,
+                AuthorId = bookDto.AuthorId
+            };
+
+            var updateResult = await _repository.UpdateAsync(updatedBook);
+            if (updateResult == null) return null;
+
+            var result = new BookDto
+            {
+                Id = updateResult.Id,
+                Title = updateResult.Title,
+                PublishedYear = updateResult.PublishedYear,
+                AuthorId = updateResult.AuthorId
+            };
+
+            return result;
         }
     }
 }
