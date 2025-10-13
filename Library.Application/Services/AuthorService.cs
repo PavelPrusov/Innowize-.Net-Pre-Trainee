@@ -1,5 +1,6 @@
 ﻿using Library.BusinessLogic.DTO.Author;
 using Library.BusinessLogic.DTO.Book;
+using Library.BusinessLogic.Exceptions;
 using Library.BusinessLogic.Interfaces;
 using Library.DataAccess.Repositories;
 using Library.Domain.Entities;
@@ -32,9 +33,13 @@ namespace Library.BusinessLogic.Services
             return result;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-          return await _repository.DeleteAsync(id);
+            var book = await _repository.GetByIdAsync(id);
+            if (book == null)
+                throw NotFoundException.AuthorNotFound(id);
+
+            await _repository.DeleteAsync(id); ;
         }
 
         public async Task<List<AuthorDto>> GetAllAsync()
@@ -54,7 +59,7 @@ namespace Library.BusinessLogic.Services
         public async Task<AuthorDto?> GetByIdAsync(int id)
         {
             var author = await _repository.GetByIdAsync(id);
-            if (author == null) return null;
+            if (author == null) throw NotFoundException.AuthorNotFound(id);
 
             var result = new AuthorDto
             {
@@ -69,7 +74,7 @@ namespace Library.BusinessLogic.Services
         public async Task<AuthorDto?> UpdateAsync(int id, UpdateAuthorDto authorDto)
         {
             var existingAuthor = await _repository.GetByIdAsync(id);
-            if (existingAuthor == null) return null;
+            if (existingAuthor == null) throw NotFoundException.AuthorNotFound(id);
 
             var updatedAuthor = new Author
             {

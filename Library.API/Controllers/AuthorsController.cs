@@ -27,7 +27,6 @@ namespace Library.API.Controllers
         public async Task<ActionResult<AuthorDto>> GetById(int id)
         {
             var author = await _authorService.GetByIdAsync(id);
-            if (author == null) return NotFound();
             return Ok(author);
         }
 
@@ -42,15 +41,13 @@ namespace Library.API.Controllers
         public async Task<ActionResult<AuthorDto>> Update(int id, UpdateAuthorDto authorDto)
         {
             var author = await _authorService.UpdateAsync(id, authorDto);
-            if (author == null) return NotFound();
             return Ok(author);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await _authorService.DeleteAsync(id);
-            if (!result) return NotFound();
+            await _authorService.DeleteAsync(id);
             return NoContent();
         }
     }

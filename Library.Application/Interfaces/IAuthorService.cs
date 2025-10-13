@@ -8,7 +8,7 @@ namespace Library.BusinessLogic.Interfaces
         Task<AuthorDto?> GetByIdAsync(int id);
         Task<AuthorDto> CreateAsync(CreateAuthorDto authorDto);
         Task<AuthorDto?> UpdateAsync(int id, UpdateAuthorDto authorDto);
-        Task<bool> DeleteAsync(int id);
+        Task DeleteAsync(int id);
 
     }
 }

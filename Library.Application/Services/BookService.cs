@@ -1,4 +1,5 @@
 ﻿using Library.BusinessLogic.DTO.Book;
+using Library.BusinessLogic.Exceptions;
 using Library.BusinessLogic.Interfaces;
 using Library.DataAccess.Repositories;
 using Library.Domain.Entities;
@@ -7,13 +8,20 @@ namespace Library.BusinessLogic.Services
 {
     public class BookService : IBookService
     {
-        private readonly IRepository<Book> _repository;
-        public BookService(IRepository<Book> repository) {
-            _repository = repository;
+        private readonly IRepository<Book> _bookRepository;
+        private readonly IRepository<Author> _authorRepository;
+        public BookService(IRepository<Book> bookRepository, IRepository<Author> authorRepository) {
+            _bookRepository = bookRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task<BookDto> CreateAsync(CreateBookDto bookDto)
         {
+
+            var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
+            if (author == null)
+                throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
+
             var book = new Book
             {
                 Title = bookDto.Title,
@@ -21,7 +29,7 @@ namespace Library.BusinessLogic.Services
                 AuthorId = bookDto.AuthorId
             };
 
-            var createdBook = await _repository.AddAsync(book);
+            var createdBook = await _bookRepository.AddAsync(book);
 
             var result = new BookDto { 
                 Id = createdBook.Id, 
@@ -32,14 +40,18 @@ namespace Library.BusinessLogic.Services
             return result;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return await _repository.DeleteAsync(id);
+            var book = await _bookRepository.GetByIdAsync(id);
+            if (book == null)
+                throw NotFoundException.BookNotFound(id);
+
+            await _bookRepository.DeleteAsync(id);
         }
 
         public async Task<List<BookDto>> GetAllAsync()
         {
-            var books = await _repository.GetAllAsync();
+            var books = await _bookRepository.GetAllAsync();
 
             var result = books.Select(book => new BookDto
             {
@@ -54,8 +66,8 @@ namespace Library.BusinessLogic.Services
 
         public async Task<BookDto?> GetByIdAsync(int id)
         {
-            var book = await _repository.GetByIdAsync(id);
-            if (book == null) return null;
+            var book = await _bookRepository.GetByIdAsync(id);
+            if (book == null) throw NotFoundException.BookNotFound(id);
 
             var result =  new BookDto
             {
@@ -70,8 +82,16 @@ namespace Library.BusinessLogic.Services
 
         public async Task<BookDto?> UpdateAsync(int id, UpdateBookDto bookDto)
         {
-            var existingBook = await _repository.GetByIdAsync(id);
-            if (existingBook == null) return null;
+            var existingBook = await _bookRepository.GetByIdAsync(id);
+            if (existingBook == null) throw NotFoundException.BookNotFound(id);
+
+
+            if (existingBook.AuthorId != bookDto.AuthorId)
+            {
+                var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
+                if (author == null)
+                    throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
+            }
 
             var updatedBook = new Book
             {
@@ -81,8 +101,7 @@ namespace Library.BusinessLogic.Services
                 AuthorId = bookDto.AuthorId
             };
 
-            var updateResult = await _repository.UpdateAsync(updatedBook);
-            if (updateResult == null) return null;
+            var updateResult = await _bookRepository.UpdateAsync(updatedBook);
 
             var result = new BookDto
             {

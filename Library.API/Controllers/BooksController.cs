@@ -47,9 +47,8 @@ namespace Library.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var deletedBook = await _bookService.DeleteAsync(id);
-            if (!deletedBook) return NotFound();
-            return NoContent();
+           await _bookService.DeleteAsync(id);
+           return NoContent();
         }
     }
 }
