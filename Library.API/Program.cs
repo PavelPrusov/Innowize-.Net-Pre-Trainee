@@ -1,5 +1,7 @@
+using Library.API.Middleware;
 using Library.BusinessLogic;
 using Library.DataAccess;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ builder.Services
     .AddBusinessLogic();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
