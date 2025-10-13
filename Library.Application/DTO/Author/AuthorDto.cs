@@ -1,9 +1,5 @@
 ﻿namespace Library.BusinessLogic.DTO.Author
 {
-    public class AuthorDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public DateOnly DateOfBirth { get; set; } 
-    }
+    public record AuthorDto(int Id, string Name , DateOnly DateOfBirth);
+    
 }
