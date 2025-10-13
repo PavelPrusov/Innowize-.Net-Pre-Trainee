@@ -18,7 +18,8 @@ namespace Library.BusinessLogic.Validators.Book
                     .WithMessage($"Год публикации должен быть между 1000 и {DateTime.Now.Year + 1}");
 
             RuleFor(x => x.AuthorId)
-                .GreaterThan(0).WithMessage("ID автора должен быть положительным числом");
+                .GreaterThan(0).WithMessage("ID автора должен быть положительным числом")
+                .LessThan(100000).WithMessage("ID автора слишком большой");
         }
     }
 }
