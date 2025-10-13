@@ -1,4 +1,5 @@
-﻿using Library.BusinessLogic.DTO.Book;
+﻿using Library.BusinessLogic.DTO.Author;
+using Library.BusinessLogic.DTO.Book;
 using Library.BusinessLogic.Exceptions;
 using Library.BusinessLogic.Interfaces;
 using Library.DataAccess.Repositories;
@@ -15,28 +16,22 @@ namespace Library.BusinessLogic.Services
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
         }
+        private BookDto MapToDto(Book book) =>
+            new BookDto(book.Id, book.Title, book.PublishedYear, book.AuthorId);
 
+        private Book MapToEntity(CreateBookDto dto) =>
+            new Book { Title = dto.Title, PublishedYear = dto.PublishedYear, AuthorId = dto.AuthorId };
         public async Task<BookDto> CreateAsync(CreateBookDto bookDto)
         {
 
             var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
-            if (author == null)
-                throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
+            if (author == null) throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
 
-            var book = new Book
-            {
-                Title = bookDto.Title,
-                PublishedYear = bookDto.PublishedYear,
-                AuthorId = bookDto.AuthorId
-            };
+            var book = MapToEntity(bookDto);
 
             var createdBook = await _bookRepository.AddAsync(book);
 
-            var result = new BookDto { 
-                Id = createdBook.Id, 
-                Title = createdBook.Title, 
-                PublishedYear = createdBook.PublishedYear, 
-                AuthorId = createdBook.AuthorId };
+            var result = MapToDto(createdBook);
 
             return result;
         }
@@ -44,8 +39,7 @@ namespace Library.BusinessLogic.Services
         public async Task DeleteAsync(int id)
         {
             var book = await _bookRepository.GetByIdAsync(id);
-            if (book == null)
-                throw NotFoundException.BookNotFound(id);
+            if (book == null) throw NotFoundException.BookNotFound(id);
 
             await _bookRepository.DeleteAsync(id);
         }
@@ -54,34 +48,22 @@ namespace Library.BusinessLogic.Services
         {
             var books = await _bookRepository.GetAllAsync();
 
-            var result = books.Select(book => new BookDto
-            {
-                Id = book.Id,
-                Title = book.Title,
-                PublishedYear = book.PublishedYear,
-                AuthorId = book.AuthorId
-            }).ToList();
+            var result = books.Select(MapToDto).ToList();
 
             return result;
         }
 
-        public async Task<BookDto?> GetByIdAsync(int id)
+        public async Task<BookDto> GetByIdAsync(int id)
         {
             var book = await _bookRepository.GetByIdAsync(id);
             if (book == null) throw NotFoundException.BookNotFound(id);
 
-            var result =  new BookDto
-            {
-                Id = book.Id,
-                Title = book.Title,
-                PublishedYear = book.PublishedYear,
-                AuthorId = book.AuthorId
-            };
+            var result = MapToDto(book);
 
             return result;
         }
 
-        public async Task<BookDto?> UpdateAsync(int id, UpdateBookDto bookDto)
+        public async Task<BookDto> UpdateAsync(int id, UpdateBookDto bookDto)
         {
             var existingBook = await _bookRepository.GetByIdAsync(id);
             if (existingBook == null) throw NotFoundException.BookNotFound(id);
@@ -90,8 +72,7 @@ namespace Library.BusinessLogic.Services
             if (existingBook.AuthorId != bookDto.AuthorId)
             {
                 var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
-                if (author == null)
-                    throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
+                if (author == null) throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
             }
 
             var updatedBook = new Book
@@ -104,13 +85,7 @@ namespace Library.BusinessLogic.Services
 
             var updateResult = await _bookRepository.UpdateAsync(updatedBook);
 
-            var result = new BookDto
-            {
-                Id = updateResult.Id,
-                Title = updateResult.Title,
-                PublishedYear = updateResult.PublishedYear,
-                AuthorId = updateResult.AuthorId
-            };
+            var result = MapToDto(updateResult);
 
             return result;
         }

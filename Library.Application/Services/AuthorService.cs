@@ -14,30 +14,25 @@ namespace Library.BusinessLogic.Services
         {
             _authorRepository = repository;
         }
+        private AuthorDto MapToDto(Author author) =>
+            new AuthorDto(author.Id, author.Name, author.DateOfBirth);
+
+        private Author MapToEntity(CreateAuthorDto dto) =>
+            new Author { Name = dto.Name, DateOfBirth = dto.DateOfBirth };
         public async Task<AuthorDto> CreateAsync(CreateAuthorDto authorDto)
         {
-            var Author = new Author
-            {
-                Name = authorDto.Name,
-                DateOfBirth = authorDto.DateOfBirth
-            };
+            var author = MapToEntity(authorDto);
 
-            var createdAuthor = await _authorRepository.AddAsync(Author);
+            var createdAuthor = await _authorRepository.AddAsync(author);
 
-            var result = new AuthorDto
-            {
-                Id = createdAuthor.Id,
-                Name = createdAuthor.Name,
-                DateOfBirth = createdAuthor.DateOfBirth,
-            };
+            var result = MapToDto(createdAuthor);
             return result;
         }
 
         public async Task DeleteAsync(int id)
         {
             var book = await _authorRepository.GetByIdAsync(id);
-            if (book == null)
-                throw NotFoundException.AuthorNotFound(id);
+            if (book == null) throw NotFoundException.AuthorNotFound(id);
 
             await _authorRepository.DeleteAsync(id);
         }
@@ -46,32 +41,21 @@ namespace Library.BusinessLogic.Services
         {
             var authors = await _authorRepository.GetAllAsync();
 
-            var result = authors.Select(author => new AuthorDto
-            {
-                Id = author.Id,
-                DateOfBirth= author.DateOfBirth,
-                Name = author.Name,
-            }).ToList();
+            var result = authors.Select(MapToDto).ToList();
 
             return result;
         }
 
-        public async Task<AuthorDto?> GetByIdAsync(int id)
+        public async Task<AuthorDto> GetByIdAsync(int id)
         {
             var author = await _authorRepository.GetByIdAsync(id);
             if (author == null) throw NotFoundException.AuthorNotFound(id);
 
-            var result = new AuthorDto
-            {
-                Id = author.Id,
-                DateOfBirth = author.DateOfBirth,
-                Name = author.Name,
-            };
-
+            var result = MapToDto(author);
             return result;
         }
 
-        public async Task<AuthorDto?> UpdateAsync(int id, UpdateAuthorDto authorDto)
+        public async Task<AuthorDto> UpdateAsync(int id, UpdateAuthorDto authorDto)
         {
             var existingAuthor = await _authorRepository.GetByIdAsync(id);
             if (existingAuthor == null) throw NotFoundException.AuthorNotFound(id);
@@ -84,15 +68,8 @@ namespace Library.BusinessLogic.Services
             };
 
             var updateResult = await _authorRepository.UpdateAsync(updatedAuthor);
-            if (updateResult == null) return null;
 
-            var result = new AuthorDto
-            {
-                Id = updateResult.Id,
-                DateOfBirth = updateResult.DateOfBirth,
-                Name = updateResult.Name,
-            };
-
+            var result = MapToDto(updateResult);
             return result;
         }
     }

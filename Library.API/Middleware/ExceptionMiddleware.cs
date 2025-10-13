@@ -45,32 +45,30 @@ namespace Library.API.Middleware
 
         private static ErrorResponceDto HandleAppException(AppException ex)
         {
-            return new ErrorResponceDto
-            {
-                Title = ex.Title,
-                Message = ex.Message,
-                StatusCode = (int)ex.StatusCode
-            };
+            return new ErrorResponceDto(
+                (int)ex.StatusCode,
+                ex.Title,
+                ex.Message
+                );
         }
 
         private static ErrorResponceDto HandleArgumentException(ArgumentException ex)
         {
-            return new ErrorResponceDto
-            {
-                Title = "Bad Request",
-                Message = ex.Message,
-                StatusCode = (int)HttpStatusCode.BadRequest
-            };
+            return new ErrorResponceDto(
+                (int)HttpStatusCode.BadRequest, 
+                "Bad Request", 
+                ex.Message 
+                );
         }
 
         private static ErrorResponceDto HandleGenericException(Exception ex)
         {
-            return new ErrorResponceDto
-            {
-                Title = "Internal Server Error",
-                Message = "An error occurred",
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
+            return new ErrorResponceDto(
+                (int)HttpStatusCode.InternalServerError, 
+                "Internal Server Error", 
+                "An error occurred"
+                );
+          
         }
     }
 }
