@@ -10,6 +10,7 @@ namespace Library.BusinessLogic.Services
     {
         private readonly IRepository<Book> _bookRepository;
         private readonly IRepository<Author> _authorRepository;
+
         public BookService(IRepository<Book> bookRepository, IRepository<Author> authorRepository) {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;

@@ -17,7 +17,8 @@ namespace Library.DataAccess.Repositories
         protected virtual int GetId(T entity)
         {
             var prop = typeof(T).GetProperty("Id");
-            return (int)prop.GetValue(entity);
+            var result = (int)prop.GetValue(entity);
+            return result;
         }
         protected virtual void SetId(T entity, int id)
         {
@@ -41,7 +42,9 @@ namespace Library.DataAccess.Repositories
         {
             SetId(entity, _nextId++);
             _entityList.Add(entity);
-            return Task.FromResult(entity);
+
+            var result = Task.FromResult(entity);
+            return result;
         }
         public Task<T?> UpdateAsync(T entity)
         {
@@ -54,29 +57,35 @@ namespace Library.DataAccess.Repositories
                 return Task.FromResult<T?>(existingEntity);
             }
 
-            return Task.FromResult<T?>(null);
+            var result = Task.FromResult<T?>(null);
+            return result;
         }
 
         public Task<bool> DeleteAsync(int id)
         {
             var entity = _entityList.FirstOrDefault(e => GetId(e) == id);
+            
             if (entity != null)
             {
                 _entityList.Remove(entity);
                 return Task.FromResult(true);
             }
-            return Task.FromResult(false);
+
+            var result = Task.FromResult(false);
+            return result;
         }
 
         public Task<List<T>> GetAllAsync()
         {
-            return Task.FromResult(_entityList);
+            var result = Task.FromResult(_entityList);
+            return result;
         }
 
         public Task<T?> GetByIdAsync(int id)
         {
             var entity = _entityList.FirstOrDefault(e => GetId(e) == id);
-            return Task.FromResult(entity);
+            var result = Task.FromResult(entity);
+            return result;
         }
 
     }

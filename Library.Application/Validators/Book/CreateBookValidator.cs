@@ -8,18 +8,17 @@ namespace Library.BusinessLogic.Validators.Book
         public CreateBookValidator()
         {
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Название книги обязательно")
-                .MaximumLength(200).WithMessage("Название книги не может превышать 200 символов")
-                .Matches(@"^[a-zA-Zа-яА-Я0-9\s\.,!?\-\'""\(\)]+$")
-                    .WithMessage("Название книги содержит запрещенные символы");
+                .NotEmpty().WithMessage("Book title is required")
+                .MaximumLength(200).WithMessage("Book title cannot exceed 200 characters")
+                .Matches(@"^[a-zA-Zа-яА-Я0-9\s\.,!?\-\'""\(\)]+$").WithMessage("Book title contains invalid characters");
 
             RuleFor(x => x.PublishedYear)
                 .InclusiveBetween(1000, DateTime.Now.Year + 1)
-                    .WithMessage($"Год публикации должен быть между 1000 и {DateTime.Now.Year + 1}");
+                    .WithMessage($"Publication year must be between 1000 and {DateTime.Now.Year + 1}");
 
             RuleFor(x => x.AuthorId)
-                .GreaterThan(0).WithMessage("ID автора должен быть положительным числом")
-                .LessThan(100000).WithMessage("ID автора слишком большой");
+                .GreaterThan(0).WithMessage("Author ID must be a positive number")
+                .LessThan(100000).WithMessage("Author ID is too large");
         }
     }
 }

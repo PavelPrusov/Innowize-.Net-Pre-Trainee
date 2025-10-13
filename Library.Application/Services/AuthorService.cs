@@ -9,10 +9,10 @@ namespace Library.BusinessLogic.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IRepository<Author> _repository;
+        private readonly IRepository<Author> _authorRepository;
         public AuthorService(IRepository<Author> repository)
         {
-            _repository = repository;
+            _authorRepository = repository;
         }
         public async Task<AuthorDto> CreateAsync(CreateAuthorDto authorDto)
         {
@@ -22,7 +22,7 @@ namespace Library.BusinessLogic.Services
                 DateOfBirth = authorDto.DateOfBirth
             };
 
-            var createdAuthor = await _repository.AddAsync(Author);
+            var createdAuthor = await _authorRepository.AddAsync(Author);
 
             var result = new AuthorDto
             {
@@ -35,16 +35,16 @@ namespace Library.BusinessLogic.Services
 
         public async Task DeleteAsync(int id)
         {
-            var book = await _repository.GetByIdAsync(id);
+            var book = await _authorRepository.GetByIdAsync(id);
             if (book == null)
                 throw NotFoundException.AuthorNotFound(id);
 
-            await _repository.DeleteAsync(id); ;
+            await _authorRepository.DeleteAsync(id);
         }
 
         public async Task<List<AuthorDto>> GetAllAsync()
         {
-            var authors = await _repository.GetAllAsync();
+            var authors = await _authorRepository.GetAllAsync();
 
             var result = authors.Select(author => new AuthorDto
             {
@@ -58,7 +58,7 @@ namespace Library.BusinessLogic.Services
 
         public async Task<AuthorDto?> GetByIdAsync(int id)
         {
-            var author = await _repository.GetByIdAsync(id);
+            var author = await _authorRepository.GetByIdAsync(id);
             if (author == null) throw NotFoundException.AuthorNotFound(id);
 
             var result = new AuthorDto
@@ -73,7 +73,7 @@ namespace Library.BusinessLogic.Services
 
         public async Task<AuthorDto?> UpdateAsync(int id, UpdateAuthorDto authorDto)
         {
-            var existingAuthor = await _repository.GetByIdAsync(id);
+            var existingAuthor = await _authorRepository.GetByIdAsync(id);
             if (existingAuthor == null) throw NotFoundException.AuthorNotFound(id);
 
             var updatedAuthor = new Author
@@ -83,7 +83,7 @@ namespace Library.BusinessLogic.Services
                 Name = authorDto.Name,
             };
 
-            var updateResult = await _repository.UpdateAsync(updatedAuthor);
+            var updateResult = await _authorRepository.UpdateAsync(updatedAuthor);
             if (updateResult == null) return null;
 
             var result = new AuthorDto
