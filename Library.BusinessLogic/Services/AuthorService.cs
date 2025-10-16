@@ -1,4 +1,5 @@
-﻿using Library.BusinessLogic.DTO.Author;
+﻿using FluentValidation;
+using Library.BusinessLogic.DTO.Author;
 using Library.BusinessLogic.DTO.Book;
 using Library.BusinessLogic.Exceptions;
 using Library.BusinessLogic.Interfaces;
@@ -10,17 +11,35 @@ namespace Library.BusinessLogic.Services
     public class AuthorService : IAuthorService
     {
         private readonly IRepository<Author> _authorRepository;
-        public AuthorService(IRepository<Author> repository)
+        private readonly IValidator<CreateAuthorDto> _createAuthorValidator;
+        private readonly IValidator<UpdateAuthorDto> _updateAuthorValidator;
+        public AuthorService(
+            IRepository<Author> repository,
+            IValidator<CreateAuthorDto> createValidator,
+            IValidator<UpdateAuthorDto> updateValidator
+            )
         {
             _authorRepository = repository;
+            _createAuthorValidator = createValidator;
+            _updateAuthorValidator = updateValidator;
+        }
+
+        private async Task ValidateAsync<T>(T dto, IValidator<T> validator)
+        {
+            var result = await validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
         }
         private AuthorDto MapToDto(Author author) =>
             new AuthorDto(author.Id, author.Name, author.DateOfBirth);
 
         private Author MapToEntity(CreateAuthorDto dto) =>
             new Author { Name = dto.Name, DateOfBirth = dto.DateOfBirth };
+
         public async Task<AuthorDto> CreateAsync(CreateAuthorDto authorDto)
         {
+            await  ValidateAsync(authorDto, _createAuthorValidator);
+
             var author = MapToEntity(authorDto);
 
             var createdAuthor = await _authorRepository.AddAsync(author);
@@ -57,6 +76,8 @@ namespace Library.BusinessLogic.Services
 
         public async Task<AuthorDto> UpdateAsync(int id, UpdateAuthorDto authorDto)
         {
+            await ValidateAsync(authorDto, _updateAuthorValidator);
+
             var existingAuthor = await _authorRepository.GetByIdAsync(id);
             if (existingAuthor == null) throw NotFoundException.AuthorNotFound(id);
 

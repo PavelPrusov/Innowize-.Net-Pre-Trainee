@@ -1,4 +1,5 @@
-﻿using Library.BusinessLogic.DTO.Author;
+﻿using FluentValidation;
+using Library.BusinessLogic.DTO.Author;
 using Library.BusinessLogic.DTO.Book;
 using Library.BusinessLogic.Exceptions;
 using Library.BusinessLogic.Interfaces;
@@ -11,10 +12,28 @@ namespace Library.BusinessLogic.Services
     {
         private readonly IRepository<Book> _bookRepository;
         private readonly IRepository<Author> _authorRepository;
+        private readonly IValidator<CreateBookDto> _createBookValidator;
+        private readonly IValidator<UpdateBookDto> _updateBookValidator;
 
-        public BookService(IRepository<Book> bookRepository, IRepository<Author> authorRepository) {
+        private async Task ValidateAsync<T>(T dto, IValidator<T> validator)
+        {
+            var result = await validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+        }
+
+        public BookService(
+            IRepository<Book> bookRepository,
+            IRepository<Author> authorRepository,
+            IValidator<CreateBookDto> createValidator,
+            IValidator<UpdateBookDto> updateValidator
+            )
+        {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
+
+            _createBookValidator = createValidator;
+            _updateBookValidator = updateValidator;
         }
         private BookDto MapToDto(Book book) =>
             new BookDto(book.Id, book.Title, book.PublishedYear, book.AuthorId);
@@ -23,7 +42,7 @@ namespace Library.BusinessLogic.Services
             new Book { Title = dto.Title, PublishedYear = dto.PublishedYear, AuthorId = dto.AuthorId };
         public async Task<BookDto> CreateAsync(CreateBookDto bookDto)
         {
-
+            await ValidateAsync(bookDto, _createBookValidator);
             var author = await _authorRepository.GetByIdAsync(bookDto.AuthorId);
             if (author == null) throw NotFoundException.AuthorNotFound(bookDto.AuthorId);
 
@@ -65,6 +84,8 @@ namespace Library.BusinessLogic.Services
 
         public async Task<BookDto> UpdateAsync(int id, UpdateBookDto bookDto)
         {
+            await ValidateAsync(bookDto, _updateBookValidator);
+
             var existingBook = await _bookRepository.GetByIdAsync(id);
             if (existingBook == null) throw NotFoundException.BookNotFound(id);
 
