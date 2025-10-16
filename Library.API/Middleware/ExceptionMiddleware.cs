@@ -33,7 +33,6 @@ namespace Library.API.Middleware
         {
             var errorResponse = exception switch
             {
-                AppValidationException ex => HandleValidationException(ex),
                 FluentValidation.ValidationException ex => HandleFluentValidationException(ex),
                 AppException appEx => HandleAppException(appEx),
                 ArgumentException argEx => HandleArgumentException(argEx),
@@ -58,15 +57,6 @@ namespace Library.API.Middleware
                 "Validation Error",
                 "One or more validation errors occurred",
                 errors
-            );
-        }
-        private static ValidationErrorResponceDto HandleValidationException(AppValidationException ex)
-        {
-            return new ValidationErrorResponceDto(
-                (int)ex.StatusCode,
-                ex.Title,
-                ex.Message,
-                ex.Errors
             );
         }
 
