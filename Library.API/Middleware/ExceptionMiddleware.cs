@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Library.BusinessLogic.DTO;
 using Library.BusinessLogic.Exceptions;
+using Library.API.Resources;
 using System.Net;
 
 namespace Library.API.Middleware
@@ -54,8 +55,8 @@ namespace Library.API.Middleware
 
             return new ValidationErrorResponceDto(
                 (int)HttpStatusCode.BadRequest,
-                "Validation Error",
-                "One or more validation errors occurred",
+                ApiMessages.ValidationError,
+                ApiMessages.ValidationErrorMessage,
                 errors
             );
         }
@@ -73,7 +74,7 @@ namespace Library.API.Middleware
         {
             return new ErrorResponceDto(
                 (int)HttpStatusCode.BadRequest, 
-                "Bad Request", 
+                ApiMessages.BadRequest, 
                 ex.Message 
                 );
         }
@@ -82,8 +83,8 @@ namespace Library.API.Middleware
         {
             return new ErrorResponceDto(
                 (int)HttpStatusCode.InternalServerError, 
-                "Internal Server Error", 
-                "An error occurred"
+                ApiMessages.InternalServerError, 
+                ApiMessages.GenericErrorMessage
                 );
           
         }
