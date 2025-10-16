@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Library.BusinessLogic.DTO.Author;
+using Library.BusinessLogic.Resources;
 
 namespace Library.BusinessLogic.Validators.Author
 {
@@ -8,13 +9,13 @@ namespace Library.BusinessLogic.Validators.Author
         public UpdateAuthorValidator()
         {
             RuleFor(x => x.Name)
-                  .NotEmpty().WithMessage("Author name is required")
-                  .MaximumLength(100).WithMessage("Author name cannot exceed 100 characters")
-                  .Matches(@"^[a-zA-Zа-яА-Я\s\.\-]+$").WithMessage("Author name can only contain letters, spaces, dots and hyphens");
+                .NotEmpty().WithMessage(ValidationMessages.FieldRequierd)
+                .MaximumLength(100).WithMessage(string.Format(ValidationMessages.MaxLength, 100))
+                .Matches(@"^[a-zA-Zа-яА-Я\s\.\-]+$").WithMessage(ValidationMessages.InvalidNameFormat);
 
             RuleFor(x => x.DateOfBirth)
-                .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage("Date of birth must be in the past")
-                .GreaterThanOrEqualTo(new DateOnly(1800, 1, 1)).WithMessage("Date of birth cannot be earlier than 1800");
+                .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage(ValidationMessages.DateMustBePast)
+                .GreaterThanOrEqualTo(new DateOnly(1800, 1, 1)).WithMessage(string.Format(ValidationMessages.DateMinValue, 1800));
         }
     }
 }

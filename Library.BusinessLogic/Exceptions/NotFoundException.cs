@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Library.BusinessLogic.Resources;
+using System.Net;
 
 namespace Library.BusinessLogic.Exceptions
 {
@@ -6,7 +7,7 @@ namespace Library.BusinessLogic.Exceptions
     {
         public NotFoundException(string message): base("NotFound", message,HttpStatusCode.NotFound) { }
 
-        public static NotFoundException BookNotFound(int id) => new ($"Book with ID {id} is missing");
-        public static NotFoundException AuthorNotFound(int id) => new ($"Author with ID {id} is missing");
+        public static NotFoundException BookNotFound(int id) => new (string.Format(BusinessMessages.BookNotFound,id));
+        public static NotFoundException AuthorNotFound(int id) => new (string.Format(BusinessMessages.AuthorNotFound, id));
     }
 }
