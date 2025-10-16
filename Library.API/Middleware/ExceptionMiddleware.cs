@@ -1,5 +1,7 @@
-﻿using Library.BusinessLogic.DTO;
+﻿using FluentValidation;
+using Library.BusinessLogic.DTO;
 using Library.BusinessLogic.Exceptions;
+using Library.API.Resources;
 using System.Net;
 
 namespace Library.API.Middleware
@@ -32,6 +34,7 @@ namespace Library.API.Middleware
         {
             var errorResponse = exception switch
             {
+                FluentValidation.ValidationException ex => HandleFluentValidationException(ex),
                 AppException appEx => HandleAppException(appEx),
                 ArgumentException argEx => HandleArgumentException(argEx),
                 _ => HandleGenericException(exception)
@@ -41,6 +44,21 @@ namespace Library.API.Middleware
             context.Response.StatusCode = errorResponse.StatusCode;
 
             await context.Response.WriteAsJsonAsync(errorResponse);
+        }
+
+        private static ValidationErrorResponceDto HandleFluentValidationException(ValidationException ex)
+        {
+            var errors = ex.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key ,g => g.Select(e => e.ErrorMessage).ToArray()
+       );
+
+            return new ValidationErrorResponceDto(
+                (int)HttpStatusCode.BadRequest,
+                ApiMessages.ValidationError,
+                ApiMessages.ValidationErrorMessage,
+                errors
+            );
         }
 
         private static ErrorResponceDto HandleAppException(AppException ex)
@@ -56,7 +74,7 @@ namespace Library.API.Middleware
         {
             return new ErrorResponceDto(
                 (int)HttpStatusCode.BadRequest, 
-                "Bad Request", 
+                ApiMessages.BadRequest, 
                 ex.Message 
                 );
         }
@@ -65,8 +83,8 @@ namespace Library.API.Middleware
         {
             return new ErrorResponceDto(
                 (int)HttpStatusCode.InternalServerError, 
-                "Internal Server Error", 
-                "An error occurred"
+                ApiMessages.InternalServerError, 
+                ApiMessages.GenericErrorMessage
                 );
           
         }
