@@ -1,4 +1,5 @@
-﻿using Library.BusinessLogic.DTO;
+﻿using FluentValidation;
+using Library.BusinessLogic.DTO;
 using Library.BusinessLogic.Exceptions;
 using System.Net;
 
@@ -32,6 +33,8 @@ namespace Library.API.Middleware
         {
             var errorResponse = exception switch
             {
+                AppValidationException ex => HandleValidationException(ex),
+                FluentValidation.ValidationException ex => HandleFluentValidationException(ex),
                 AppException appEx => HandleAppException(appEx),
                 ArgumentException argEx => HandleArgumentException(argEx),
                 _ => HandleGenericException(exception)
@@ -41,6 +44,30 @@ namespace Library.API.Middleware
             context.Response.StatusCode = errorResponse.StatusCode;
 
             await context.Response.WriteAsJsonAsync(errorResponse);
+        }
+
+        private static ValidationErrorResponceDto HandleFluentValidationException(ValidationException ex)
+        {
+            var errors = ex.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key ,g => g.Select(e => e.ErrorMessage).ToArray()
+       );
+
+            return new ValidationErrorResponceDto(
+                (int)HttpStatusCode.BadRequest,
+                "Validation Error",
+                "One or more validation errors occurred",
+                errors
+            );
+        }
+        private static ValidationErrorResponceDto HandleValidationException(AppValidationException ex)
+        {
+            return new ValidationErrorResponceDto(
+                (int)ex.StatusCode,
+                ex.Title,
+                ex.Message,
+                ex.Errors
+            );
         }
 
         private static ErrorResponceDto HandleAppException(AppException ex)

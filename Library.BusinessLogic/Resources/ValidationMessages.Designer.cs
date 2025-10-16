@@ -61,7 +61,7 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {PropertyName} cannot be earlier than {0}.
+        ///   Ищет локализованную строку, похожую на {0} cannot be earlier than {1}.
         /// </summary>
         public static string DateMinValue {
             get {
@@ -70,7 +70,7 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {PropertyName} must be in the past.
+        ///   Ищет локализованную строку, похожую на {0} must be in the past.
         /// </summary>
         public static string DateMustBePast {
             get {
@@ -79,16 +79,16 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на  {PropertyName} is required.
+        ///   Ищет локализованную строку, похожую на {0} is required.
         /// </summary>
-        public static string FieldRequierd {
+        public static string FieldRequired {
             get {
-                return ResourceManager.GetString("FieldRequierd", resourceCulture);
+                return ResourceManager.GetString("FieldRequired", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {PropertyName} can only contain letters, spaces, dots and hyphens.
+        ///   Ищет локализованную строку, похожую на {0} can only contain letters, spaces, dots and hyphens.
         /// </summary>
         public static string InvalidNameFormat {
             get {
@@ -97,7 +97,7 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {PropertyName} cannot exceed {0} characters.
+        ///   Ищет локализованную строку, похожую на {0} cannot exceed {1} characters.
         /// </summary>
         public static string MaxLength {
             get {
@@ -106,7 +106,7 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {PropertyName} must be a positive number.
+        ///   Ищет локализованную строку, похожую на {0} must be a positive number.
         /// </summary>
         public static string MustBePositive {
             get {
@@ -115,7 +115,7 @@ namespace Library.BusinessLogic.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на {ProperyName} is too large.
+        ///   Ищет локализованную строку, похожую на {0} is too large.
         /// </summary>
         public static string TooLarge {
             get {
