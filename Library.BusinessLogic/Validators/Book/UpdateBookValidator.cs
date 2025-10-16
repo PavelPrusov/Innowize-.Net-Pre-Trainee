@@ -9,17 +9,17 @@ namespace Library.BusinessLogic.Validators.Book
         public UpdateBookValidator()
         {
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage(ValidationMessages.FieldRequierd)
-                .MaximumLength(200).WithMessage(string.Format(ValidationMessages.MaxLength, 200))
-                .Matches(@"^[a-zA-Zа-яА-Я0-9\s\.,!?\-\'""\(\)]+$").WithMessage(ValidationMessages.InvalidNameFormat);
+                 .NotEmpty().WithMessage(string.Format(ValidationMessages.FieldRequired, "Book title"))
+                 .MaximumLength(200).WithMessage(string.Format(ValidationMessages.MaxLength, "Book title", 200))
+                 .Matches(@"^[a-zA-Zа-яА-Я0-9\s\.,!?\-\'""\(\)]+$").WithMessage(string.Format(ValidationMessages.InvalidNameFormat, "Book title"));
 
             RuleFor(x => x.PublishedYear)
                 .InclusiveBetween(1000, DateTime.Now.Year + 1)
                 .WithMessage($"Publication year must be between 1000 and {DateTime.Now.Year + 1}");
 
             RuleFor(x => x.AuthorId)
-                .GreaterThan(0).WithMessage(ValidationMessages.MustBePositive)
-                .LessThan(100000).WithMessage(ValidationMessages.TooLarge);
+                .GreaterThan(0).WithMessage(string.Format(ValidationMessages.MustBePositive, "Author ID"))
+                .LessThan(100000).WithMessage(string.Format(ValidationMessages.TooLarge, "Author ID"));
         }
     }
 }

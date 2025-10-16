@@ -9,13 +9,13 @@ namespace Library.BusinessLogic.Validators.Author
         public UpdateAuthorValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage(ValidationMessages.FieldRequierd)
-                .MaximumLength(100).WithMessage(string.Format(ValidationMessages.MaxLength, 100))
-                .Matches(@"^[a-zA-Zа-яА-Я\s\.\-]+$").WithMessage(ValidationMessages.InvalidNameFormat);
+                     .NotEmpty().WithMessage(string.Format(ValidationMessages.FieldRequired, "Author name"))
+                     .MaximumLength(100).WithMessage(string.Format(ValidationMessages.MaxLength, "Author name", 100))
+                     .Matches(@"^[a-zA-Zа-яА-Я\s\.\-]+$").WithMessage(string.Format(ValidationMessages.InvalidNameFormat, "Author name"));
 
             RuleFor(x => x.DateOfBirth)
-                .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage(ValidationMessages.DateMustBePast)
-                .GreaterThanOrEqualTo(new DateOnly(1800, 1, 1)).WithMessage(string.Format(ValidationMessages.DateMinValue, 1800));
+                .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage(string.Format(ValidationMessages.DateMustBePast, "Date of birth"))
+                .GreaterThanOrEqualTo(new DateOnly(1800, 1, 1)).WithMessage(string.Format(ValidationMessages.DateMinValue, "Date of birth", 1800));
         }
     }
 }
