@@ -9,7 +9,7 @@ namespace Library.DataAccess.Repositories
         protected readonly List<T> _entityList;
         private int _nextId = 1;
 
-        public InMemoryRepository(LibraryDbContext context)
+        public InMemoryRepository(LibraryListContext context)
         {
             _entityList = context.GetEntitySet<T>();
         }

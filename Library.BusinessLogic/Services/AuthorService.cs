@@ -50,8 +50,8 @@ namespace Library.BusinessLogic.Services
 
         public async Task DeleteAsync(int id)
         {
-            var book = await _authorRepository.GetByIdAsync(id);
-            if (book == null) throw NotFoundException.AuthorNotFound(id);
+            var author = await _authorRepository.GetByIdAsync(id);
+            if (author == null) throw NotFoundException.AuthorNotFound(id);
 
             await _authorRepository.DeleteAsync(id);
         }

@@ -8,7 +8,7 @@ namespace Library.DataAccess
     {
         public static IServiceCollection AddDataAccess(this IServiceCollection services)
         {
-            services.AddSingleton<LibraryDbContext>();
+            services.AddSingleton<LibraryListContext>();
 
             services.AddScoped(typeof(IRepository<>), typeof(InMemoryRepository<>));
 
