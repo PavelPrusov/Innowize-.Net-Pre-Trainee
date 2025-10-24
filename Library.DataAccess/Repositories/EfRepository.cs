@@ -21,11 +21,10 @@ namespace Library.DataAccess.Repositories
 
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<List<T>> GetAllAsync()

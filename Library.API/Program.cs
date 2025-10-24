@@ -16,7 +16,7 @@ builder.Services.AddLocalization(options =>
 });
 
 builder.Services
-    .AddDataAccess()
+    .AddDataAccess(builder.Configuration)
     .AddBusinessLogic();
 
 var app = builder.Build();
