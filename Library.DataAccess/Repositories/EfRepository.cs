@@ -15,28 +15,34 @@ namespace Library.DataAccess.Repositories
 
         public async Task<T> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
 
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbSet.ToListAsync();
         }
 
-        public Task<T?> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(id);
         }
 
-        public Task<T?> UpdateAsync(T entity)
+        public async Task<T?> UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Update(entity);
+             await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿
-using Library.DataAccess.Data;
-using Library.Domain.Entities;
+﻿using Library.DataAccess.Data;
 
 namespace Library.DataAccess.Repositories
 {

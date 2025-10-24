@@ -60,7 +60,7 @@ namespace Library.BusinessLogic.Services
             var book = await _bookRepository.GetByIdAsync(id);
             if (book == null) throw NotFoundException.BookNotFound(id);
 
-            await _bookRepository.DeleteAsync(id);
+            await _bookRepository.DeleteAsync(book);
         }
 
         public async Task<List<BookDto>> GetAllAsync()

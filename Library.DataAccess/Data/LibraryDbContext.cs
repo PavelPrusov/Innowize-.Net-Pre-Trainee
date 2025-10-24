@@ -1,18 +1,14 @@
-﻿
-using Library.Domain.Entities;
+﻿using Library.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.DataAccess.Data
 {
     public class LibraryDbContext : DbContext
     {
-
-        public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
-            : base(options) { }
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options): base(options) { }
 
         public DbSet<Author> Authors { get; set; } = null!;
-        public DbSet<Book> Book { get; set; } = null!;
-
+        public DbSet<Book> Books { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

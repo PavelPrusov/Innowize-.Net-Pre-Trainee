@@ -53,7 +53,7 @@ namespace Library.BusinessLogic.Services
             var author = await _authorRepository.GetByIdAsync(id);
             if (author == null) throw NotFoundException.AuthorNotFound(id);
 
-            await _authorRepository.DeleteAsync(id);
+            await _authorRepository.DeleteAsync(author);
         }
 
         public async Task<List<AuthorDto>> GetAllAsync()
