@@ -13,6 +13,8 @@ namespace Library.DataAccess
             services.AddSingleton<LibraryListContext>();
 
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IAuthorRepository,AuthorRepository>();
+            services.AddScoped<IBookRepository,BookRepository>();
 
             services.AddDbContext<LibraryDbContext>(options =>
                 options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
