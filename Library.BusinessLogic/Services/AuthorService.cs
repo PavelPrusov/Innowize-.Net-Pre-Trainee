@@ -10,16 +10,16 @@ namespace Library.BusinessLogic.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IRepository<Author> _authorRepository;
+        private readonly IAuthorRepository _authorRepository;
         private readonly IValidator<CreateAuthorDto> _createAuthorValidator;
         private readonly IValidator<UpdateAuthorDto> _updateAuthorValidator;
         public AuthorService(
-            IRepository<Author> repository,
+            IAuthorRepository authorRepository,
             IValidator<CreateAuthorDto> createValidator,
             IValidator<UpdateAuthorDto> updateValidator
             )
         {
-            _authorRepository = repository;
+            _authorRepository = authorRepository;
             _createAuthorValidator = createValidator;
             _updateAuthorValidator = updateValidator;
         }

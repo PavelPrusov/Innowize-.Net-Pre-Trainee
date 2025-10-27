@@ -10,8 +10,8 @@ namespace Library.BusinessLogic.Services
 {
     public class BookService : IBookService
     {
-        private readonly IRepository<Book> _bookRepository;
-        private readonly IRepository<Author> _authorRepository;
+        private readonly IBookRepository _bookRepository;
+        private readonly IAuthorRepository _authorRepository;
         private readonly IValidator<CreateBookDto> _createBookValidator;
         private readonly IValidator<UpdateBookDto> _updateBookValidator;
 
@@ -23,8 +23,8 @@ namespace Library.BusinessLogic.Services
         }
 
         public BookService(
-            IRepository<Book> bookRepository,
-            IRepository<Author> authorRepository,
+            IBookRepository bookRepository,
+            IAuthorRepository authorRepository,
             IValidator<CreateBookDto> createValidator,
             IValidator<UpdateBookDto> updateValidator
             )
