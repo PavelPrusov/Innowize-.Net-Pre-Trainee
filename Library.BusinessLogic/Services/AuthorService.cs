@@ -10,16 +10,16 @@ namespace Library.BusinessLogic.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IRepository<Author> _authorRepository;
+        private readonly IAuthorRepository _authorRepository;
         private readonly IValidator<CreateAuthorDto> _createAuthorValidator;
         private readonly IValidator<UpdateAuthorDto> _updateAuthorValidator;
         public AuthorService(
-            IRepository<Author> repository,
+            IAuthorRepository authorRepository,
             IValidator<CreateAuthorDto> createValidator,
             IValidator<UpdateAuthorDto> updateValidator
             )
         {
-            _authorRepository = repository;
+            _authorRepository = authorRepository;
             _createAuthorValidator = createValidator;
             _updateAuthorValidator = updateValidator;
         }
@@ -50,10 +50,10 @@ namespace Library.BusinessLogic.Services
 
         public async Task DeleteAsync(int id)
         {
-            var book = await _authorRepository.GetByIdAsync(id);
-            if (book == null) throw NotFoundException.AuthorNotFound(id);
+            var author = await _authorRepository.GetByIdAsync(id);
+            if (author == null) throw NotFoundException.AuthorNotFound(id);
 
-            await _authorRepository.DeleteAsync(id);
+            await _authorRepository.DeleteAsync(author);
         }
 
         public async Task<List<AuthorDto>> GetAllAsync()
@@ -93,5 +93,43 @@ namespace Library.BusinessLogic.Services
             var result = MapToDto(updateResult);
             return result;
         }
+
+     
+        public async Task<List<AuthorDto>> GetFilteredAuthorsAsync(AuthorFilterDto filter)
+        {
+            var tasks = new List<Task<List<Author>>>();
+     
+            if (!string.IsNullOrEmpty(filter.NamePart))
+                tasks.Add(_authorRepository.FindByNamePartAsync(filter.NamePart.Trim()));
+
+            if (filter.HasBooks.HasValue && filter.HasBooks.Value)
+                tasks.Add(_authorRepository.GetAuthorsWithBooksAsync());
+
+            if (filter.MinBookCount.HasValue)
+            {
+                var authorsWithCounts = await _authorRepository.GetAuthorsWithBookCountAsync();
+                var countFiltered = authorsWithCounts
+                    .Where(x => x.BookCount >= filter.MinBookCount.Value)
+                    .Select(x => x.Author)
+                    .ToList();
+                tasks.Add(Task.FromResult(countFiltered));
+            }
+
+            if (tasks.Count == 0)
+            {
+                var allAuthors = await _authorRepository.GetAllAsync();
+                return allAuthors.Select(MapToDto).ToList();
+            }
+
+            var results = await Task.WhenAll(tasks);
+            IEnumerable<Author> filteredAuthors = results[0];
+
+            for (int i = 1; i < results.Length; i++)
+            {
+                filteredAuthors = filteredAuthors.Intersect(results[i]);
+            }
+            return filteredAuthors.Select(MapToDto).ToList();
+        }
     }
-}
+ }
+

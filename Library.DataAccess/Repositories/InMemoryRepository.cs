@@ -1,6 +1,4 @@
-﻿
-using Library.DataAccess.Data;
-using Library.Domain.Entities;
+﻿using Library.DataAccess.Data;
 
 namespace Library.DataAccess.Repositories
 {
@@ -9,7 +7,7 @@ namespace Library.DataAccess.Repositories
         protected readonly List<T> _entityList;
         private int _nextId = 1;
 
-        public InMemoryRepository(LibraryDbContext context)
+        public InMemoryRepository(LibraryListContext context)
         {
             _entityList = context.GetEntitySet<T>();
         }
@@ -61,18 +59,10 @@ namespace Library.DataAccess.Repositories
             return result;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public Task DeleteAsync(T entity)
         {
-            var entity = _entityList.FirstOrDefault(e => GetId(e) == id);
-            
-            if (entity != null)
-            {
-                _entityList.Remove(entity);
-                return Task.FromResult(true);
-            }
-
-            var result = Task.FromResult(false);
-            return result;
+            _entityList.Remove(entity);
+            return Task.FromResult(true);
         }
 
         public Task<List<T>> GetAllAsync()
