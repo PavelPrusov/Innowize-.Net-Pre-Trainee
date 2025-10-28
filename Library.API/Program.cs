@@ -16,12 +16,13 @@ builder.Services.AddLocalization(options =>
 });
 
 builder.Services
-    .AddDataAccess()
+    .AddDataAccess(builder.Configuration)
     .AddBusinessLogic();
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
+await app.Services.InitializeDatabaseAsync();
 
 app.UseSwagger();
 app.UseSwaggerUI();

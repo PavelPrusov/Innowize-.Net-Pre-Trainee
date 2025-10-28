@@ -10,8 +10,8 @@ namespace Library.BusinessLogic.Services
 {
     public class BookService : IBookService
     {
-        private readonly IRepository<Book> _bookRepository;
-        private readonly IRepository<Author> _authorRepository;
+        private readonly IBookRepository _bookRepository;
+        private readonly IAuthorRepository _authorRepository;
         private readonly IValidator<CreateBookDto> _createBookValidator;
         private readonly IValidator<UpdateBookDto> _updateBookValidator;
 
@@ -23,8 +23,8 @@ namespace Library.BusinessLogic.Services
         }
 
         public BookService(
-            IRepository<Book> bookRepository,
-            IRepository<Author> authorRepository,
+            IBookRepository bookRepository,
+            IAuthorRepository authorRepository,
             IValidator<CreateBookDto> createValidator,
             IValidator<UpdateBookDto> updateValidator
             )
@@ -60,7 +60,7 @@ namespace Library.BusinessLogic.Services
             var book = await _bookRepository.GetByIdAsync(id);
             if (book == null) throw NotFoundException.BookNotFound(id);
 
-            await _bookRepository.DeleteAsync(id);
+            await _bookRepository.DeleteAsync(book);
         }
 
         public async Task<List<BookDto>> GetAllAsync()
@@ -109,6 +109,37 @@ namespace Library.BusinessLogic.Services
             var result = MapToDto(updateResult);
 
             return result;
+        }
+
+        public async Task<List<BookDto>> GetFilteredBooksAsync(BookFilterDto filter)
+        {
+            var tasks = new List<Task<List<Book>>>();
+
+            if (filter.AuthorId.HasValue)
+                tasks.Add(_bookRepository.GetBooksByAuthorAsync(filter.AuthorId.Value));
+
+            if (filter.PublishedAfter.HasValue)
+                tasks.Add(_bookRepository.GetBooksPublishedAfterAsync(filter.PublishedAfter.Value));
+
+            if (!string.IsNullOrEmpty(filter.TitlePart))
+                tasks.Add(_bookRepository.SearchByTitlePartAsync(filter.TitlePart.Trim()));
+
+            if (tasks.Count == 0)
+            {
+                var allBooks = await _bookRepository.GetAllAsync();
+                return allBooks.Select(MapToDto).ToList();
+            }
+
+            var results = await Task.WhenAll(tasks);
+
+            IEnumerable<Book> filteredBooks = results[0];
+
+            for (int i = 1; i < results.Length; i++)
+            {
+                filteredBooks = filteredBooks.Intersect(results[i]);
+            }
+
+            return filteredBooks.Select(MapToDto).ToList();
         }
     }
 }
