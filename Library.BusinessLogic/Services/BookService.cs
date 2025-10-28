@@ -122,7 +122,7 @@ namespace Library.BusinessLogic.Services
                 tasks.Add(_bookRepository.GetBooksPublishedAfterAsync(filter.PublishedAfter.Value));
 
             if (!string.IsNullOrEmpty(filter.TitlePart))
-                tasks.Add(_bookRepository.SearchByTitlePartAsync(filter.TitlePart));
+                tasks.Add(_bookRepository.SearchByTitlePartAsync(filter.TitlePart.Trim()));
 
             if (tasks.Count == 0)
             {

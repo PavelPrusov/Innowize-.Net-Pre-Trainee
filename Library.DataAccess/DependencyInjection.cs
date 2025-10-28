@@ -1,8 +1,10 @@
 ﻿using Library.DataAccess.Data;
+using Library.DataAccess.Data.Seed;
 using Library.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Library.DataAccess
 {
@@ -20,6 +22,12 @@ namespace Library.DataAccess
                 options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
             return services;
+        }
+        public static async Task InitializeDatabaseAsync(this IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+            await SeedData.InitializeAsync(context);
         }
     }
 }

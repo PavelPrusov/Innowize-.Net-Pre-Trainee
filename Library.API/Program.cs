@@ -22,6 +22,7 @@ builder.Services
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
+await app.Services.InitializeDatabaseAsync();
 
 app.UseSwagger();
 app.UseSwaggerUI();

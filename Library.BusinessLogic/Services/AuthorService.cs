@@ -97,32 +97,38 @@ namespace Library.BusinessLogic.Services
      
         public async Task<List<AuthorDto>> GetFilteredAuthorsAsync(AuthorFilterDto filter)
         {
-            IEnumerable<Author> result = await _authorRepository.GetAllAsync();
-
+            var tasks = new List<Task<List<Author>>>();
+     
             if (!string.IsNullOrEmpty(filter.NamePart))
-            {
-                var nameFiltered = await _authorRepository.FindByNamePartAsync(filter.NamePart);
-                result = result.Intersect(nameFiltered);
-            }
+                tasks.Add(_authorRepository.FindByNamePartAsync(filter.NamePart.Trim()));
 
-            if (filter.HasBooks.HasValue)
-            {
-                var authorsWithBooks = await _authorRepository.GetAuthorsWithBooksAsync();
-                result = filter.HasBooks.Value
-                    ? result.Intersect(authorsWithBooks)
-                    : result.Except(authorsWithBooks);
-            }
+            if (filter.HasBooks.HasValue && filter.HasBooks.Value)
+                tasks.Add(_authorRepository.GetAuthorsWithBooksAsync());
 
             if (filter.MinBookCount.HasValue)
             {
                 var authorsWithCounts = await _authorRepository.GetAuthorsWithBookCountAsync();
                 var countFiltered = authorsWithCounts
                     .Where(x => x.BookCount >= filter.MinBookCount.Value)
-                    .Select(x => x.Author);
-                result = result.Intersect(countFiltered);
+                    .Select(x => x.Author)
+                    .ToList();
+                tasks.Add(Task.FromResult(countFiltered));
             }
 
-            return result.Select(MapToDto).ToList();
+            if (tasks.Count == 0)
+            {
+                var allAuthors = await _authorRepository.GetAllAsync();
+                return allAuthors.Select(MapToDto).ToList();
+            }
+
+            var results = await Task.WhenAll(tasks);
+            IEnumerable<Author> filteredAuthors = results[0];
+
+            for (int i = 1; i < results.Length; i++)
+            {
+                filteredAuthors = filteredAuthors.Intersect(results[i]);
+            }
+            return filteredAuthors.Select(MapToDto).ToList();
         }
     }
  }
