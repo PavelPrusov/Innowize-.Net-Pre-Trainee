@@ -10,9 +10,9 @@ namespace Library.DataAccess.Repositories
         {
         }
 
-        public async Task<Author?> FindByNameAsync(string name)
+        public async Task<List<Author>> FindByNamePartAsync(string namePart)
         {
-            var result =  await _dbSet.Where(a => a.Name == name).FirstOrDefaultAsync();
+            var result =  await _dbSet.Where(a => a.Name.Contains(namePart)).ToListAsync();
             return result;
         }
 

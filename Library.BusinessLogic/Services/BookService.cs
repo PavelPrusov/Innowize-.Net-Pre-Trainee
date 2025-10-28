@@ -110,5 +110,36 @@ namespace Library.BusinessLogic.Services
 
             return result;
         }
+
+        public async Task<List<BookDto>> GetFilteredBooksAsync(BookFilterDto filter)
+        {
+            var tasks = new List<Task<List<Book>>>();
+
+            if (filter.AuthorId.HasValue)
+                tasks.Add(_bookRepository.GetBooksByAuthorAsync(filter.AuthorId.Value));
+
+            if (filter.PublishedAfter.HasValue)
+                tasks.Add(_bookRepository.GetBooksPublishedAfterAsync(filter.PublishedAfter.Value));
+
+            if (!string.IsNullOrEmpty(filter.TitlePart))
+                tasks.Add(_bookRepository.SearchByTitlePartAsync(filter.TitlePart));
+
+            if (tasks.Count == 0)
+            {
+                var allBooks = await _bookRepository.GetAllAsync();
+                return allBooks.Select(MapToDto).ToList();
+            }
+
+            var results = await Task.WhenAll(tasks);
+
+            IEnumerable<Book> filteredBooks = results[0];
+
+            for (int i = 1; i < results.Length; i++)
+            {
+                filteredBooks = filteredBooks.Intersect(results[i]);
+            }
+
+            return filteredBooks.Select(MapToDto).ToList();
+        }
     }
 }

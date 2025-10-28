@@ -24,6 +24,13 @@ namespace Library.API.Controllers
             return Ok(books);
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFiltered([FromQuery] BookFilterDto filter)
+        {
+            var tasks = await _bookService.GetFilteredBooksAsync(filter);
+            return Ok(tasks);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BookDto>> GetById(int id)
         {

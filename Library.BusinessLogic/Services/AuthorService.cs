@@ -93,5 +93,37 @@ namespace Library.BusinessLogic.Services
             var result = MapToDto(updateResult);
             return result;
         }
+
+     
+        public async Task<List<AuthorDto>> GetFilteredAuthorsAsync(AuthorFilterDto filter)
+        {
+            IEnumerable<Author> result = await _authorRepository.GetAllAsync();
+
+            if (!string.IsNullOrEmpty(filter.NamePart))
+            {
+                var nameFiltered = await _authorRepository.FindByNamePartAsync(filter.NamePart);
+                result = result.Intersect(nameFiltered);
+            }
+
+            if (filter.HasBooks.HasValue)
+            {
+                var authorsWithBooks = await _authorRepository.GetAuthorsWithBooksAsync();
+                result = filter.HasBooks.Value
+                    ? result.Intersect(authorsWithBooks)
+                    : result.Except(authorsWithBooks);
+            }
+
+            if (filter.MinBookCount.HasValue)
+            {
+                var authorsWithCounts = await _authorRepository.GetAuthorsWithBookCountAsync();
+                var countFiltered = authorsWithCounts
+                    .Where(x => x.BookCount >= filter.MinBookCount.Value)
+                    .Select(x => x.Author);
+                result = result.Intersect(countFiltered);
+            }
+
+            return result.Select(MapToDto).ToList();
+        }
     }
-}
+ }
+

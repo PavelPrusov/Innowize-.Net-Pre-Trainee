@@ -1,5 +1,7 @@
 ﻿using Library.BusinessLogic.DTO.Author;
+using Library.BusinessLogic.DTO.Book;
 using Library.BusinessLogic.Interfaces;
+using Library.BusinessLogic.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +23,12 @@ namespace Library.API.Controllers
         {
             var authors = await _authorService.GetAllAsync();
             return Ok(authors);
+        }
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFiltered([FromQuery] AuthorFilterDto filter)
+        {
+            var tasks = await _authorService.GetFilteredAuthorsAsync(filter);
+            return Ok(tasks);
         }
 
         [HttpGet("{id}")]
